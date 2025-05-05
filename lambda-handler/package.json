@@ -1,0 +1,23 @@
+{
+  "name": "lambda-handler",
+  "version": "1.0.0",
+  "description": "Node lambda handler for plotline backend",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "dist/handler.js",
+  "scripts": {
+    "build": "tsc --noEmit && esbuild src/handler.ts --bundle --outfile=dist/bundle.js --minify",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.149",
+    "esbuild": "^0.25.3",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.799.0",
+    "@aws-sdk/lib-dynamodb": "^3.799.0",
+    "aws-sdk": "^2.1692.0"
+  }
+}
