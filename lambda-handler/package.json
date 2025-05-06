@@ -7,11 +7,12 @@
   "type": "commonjs",
   "main": "dist/handler.js",
   "scripts": {
-    "build": "tsc --noEmit && esbuild src/handler.ts --bundle --outfile=dist/bundle.js --minify",
+    "build": "tsc --noEmit && esbuild src/handler.ts --bundle --platform=node --target=node22 --format=cjs --outfile=dist/bundle.js --minify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.149",
+    "@types/node": "^22.15.9",
     "esbuild": "^0.25.3",
     "typescript": "^5.8.3"
   },

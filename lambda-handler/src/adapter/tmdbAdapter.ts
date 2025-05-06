@@ -7,6 +7,8 @@ const multiSearchEndpoint = "/3/search/multi";
 const movieDetailsEndpoint = "3/movie";
 const showDetailsEndpoint = "3/tv";
 
+const authToken = process.env.TMDB_TOKEN;
+
 export async function searchByName(query: string): Promise<SearchResult[]> {
     const queryUrl = buildSearchUrl(query);
     const response = await performNetworkCall(queryUrl);

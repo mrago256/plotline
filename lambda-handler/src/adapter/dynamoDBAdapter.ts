@@ -22,13 +22,13 @@ export async function addMovieToList(movie: QueryResult) {
     console.log("write response:", response);
 }
 
-export async function getMoviesList(): Promise<SavedEntry[]> {
-    const command = new ScanCommand({
-        "TableName": movieTableName
-    });
+// export async function getMoviesList(): Promise<SavedEntry[]> {
+//     const command = new ScanCommand({
+//         "TableName": movieTableName
+//     });
 
-    const response = await docClient.send(command);
-    console.log("Response:", response.Items);
+//     const response = await docClient.send(command);
+//     console.log("Response:", response.Items);
 
-    return response.Items; //need to test what this is
-}
+//     return response.Items; //need to test what this is
+// }
