@@ -23,6 +23,7 @@ export async function getMovieById(id: number): Promise<QueryResult> {
     const queryUrl = buildMovieIdUrl(id);
     const response = await performNetworkCall(queryUrl);
 
+    // check what happens if id doesn't exist, is it null? if so change map func to be fine
     return mapToQueryResult(response);
 }
 
@@ -67,7 +68,7 @@ function mapToSearchResult(item: any): SearchResult {
         posterUrl: posterUrl,
         type: item.media_type == "movie" ? EntryType.movie : EntryType.show,
         popularity: item.popularity,
-        id: item.id
+        tmdbId: item.id
     }
 }
 

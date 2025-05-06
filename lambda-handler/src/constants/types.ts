@@ -8,7 +8,7 @@ export interface SearchResult {
     posterUrl: string,
     type: EntryType,
     popularity: number,
-    id: number
+    tmdbId: number
 }
 
 export interface QueryResult extends SearchResult {
@@ -17,7 +17,7 @@ export interface QueryResult extends SearchResult {
 }
 
 export interface SavedEntry {
-    id: number,
+    tmdbId: number,
     name: string,
     year: number,
     description: string,
@@ -27,6 +27,7 @@ export interface SavedEntry {
     rating: number,
     personalRating: number | null,
     popularity: number,
+    dateAdded: number,
     watched: boolean
 }
 
