@@ -21,14 +21,15 @@ export async function searchByName(query: string): Promise<SearchResult[]> {
 
 export async function getMovieById(id: number): Promise<QueryResult> {
     const queryUrl = buildMovieIdUrl(id);
-    const response = await performNetworkCall(queryUrl);
 
-    // check what happens if id doesn't exist, is it null? if so change map func to be fine
+    const response = await performNetworkCall(queryUrl);
+    
     return mapToQueryResult(response);
 }
 
 export async function getShowById(id: number): Promise<QueryResult> {
     const queryUrl = buildShowIdUrl(id);
+
     const response = await performNetworkCall(queryUrl);
 
     return mapToQueryResult(response);
@@ -59,10 +60,12 @@ function buildShowIdUrl(id: number): URL {
 }
 
 function mapToSearchResult(item: any): SearchResult {
-    const posterUrl = `${imageURL}/w500${item.poster_path}`;
+    const posterUrl = item.poster_path ? `${imageURL}/w500${item.poster_path}` : null;
+    const yearString = item.release_date || item.first_air_date;
+
     return {
         name: item.name || item.title,
-        year: new Date(item.release_date || item.first_air_date).getFullYear(),
+        year: yearString ? new Date(yearString).getFullYear() : null,
         description: item.overview || "No description available",
         rating: item.vote_average,
         posterUrl: posterUrl,
@@ -74,14 +77,14 @@ function mapToSearchResult(item: any): SearchResult {
 
 function mapToQueryResult(item: any): QueryResult {
     const queryResult = mapToSearchResult(item) as QueryResult;
-    const bannerUrl = `${imageURL}/original${item.backdrop_path}`;
+    const bannerUrl = item.backdrop_path ? `${imageURL}/original${item.backdrop_path}` : null;
 
     queryResult.bannerUrl = bannerUrl;
 
     return queryResult;
 }
 
-async function performNetworkCall(url: URL, body?: any) {
+async function performNetworkCall(url: URL, body?: any): Promise<any> {
     const response = await fetch(url, {
         headers: {
             accept: "application/json",
