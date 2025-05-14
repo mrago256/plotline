@@ -9,32 +9,33 @@ const showDetailsEndpoint = "3/tv";
 
 const authToken = process.env.TMDB_TOKEN;
 
-export async function searchByName(query: string): Promise<SearchResult[]> {
-    const queryUrl = buildSearchUrl(query);
-    const response = await performNetworkCall(queryUrl);
+export const tmdbAdapter = {
+    async searchByName(query: string): Promise<SearchResult[]> {
+        const queryUrl = buildSearchUrl(query);
+        const response = await performNetworkCall(queryUrl);
 
-    const results = response.results.map((item: any) => mapToSearchResult(item));
-    results.sort((a: { popularity: number; }, b: { popularity: number; }) => b.popularity - a.popularity);
+        const results = response.results.map((item: any) => mapToSearchResult(item));
+        results.sort((a: { popularity: number; }, b: { popularity: number; }) => b.popularity - a.popularity);
 
-    return results.slice(0, 8);
+        return results.slice(0, 8);
+    },
+
+    async getMovieById(id: number): Promise<QueryResult> {
+        const queryUrl = buildMovieIdUrl(id);
+
+        const response = await performNetworkCall(queryUrl);
+
+        return mapToQueryResult(response);
+    },
+
+    async getShowById(id: number): Promise<QueryResult> {
+        const queryUrl = buildShowIdUrl(id);
+
+        const response = await performNetworkCall(queryUrl);
+
+        return mapToQueryResult(response);
+    }
 }
-
-export async function getMovieById(id: number): Promise<QueryResult> {
-    const queryUrl = buildMovieIdUrl(id);
-
-    const response = await performNetworkCall(queryUrl);
-    
-    return mapToQueryResult(response);
-}
-
-export async function getShowById(id: number): Promise<QueryResult> {
-    const queryUrl = buildShowIdUrl(id);
-
-    const response = await performNetworkCall(queryUrl);
-
-    return mapToQueryResult(response);
-}
-
 
 function buildSearchUrl(query: string, page?: number): URL {
     const url = new URL(multiSearchEndpoint, baseURL);
@@ -90,7 +91,7 @@ async function performNetworkCall(url: URL, body?: any): Promise<any> {
             accept: "application/json",
             Authorization: `Bearer ${authToken}`
         },
-        body: body ?? null
+        body: body
     });
 
     if (!response.ok) {

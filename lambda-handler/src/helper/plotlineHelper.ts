@@ -1,49 +1,60 @@
-import { getSavedList, saveMovie, saveShow } from "../adapter/dynamoDBAdapter";
-import { getMovieById, getShowById, searchByName } from "../adapter/tmdbAdapter";
+import { dynamoDBAdpater } from "../adapter/dynamoDBAdapter";
+import { tmdbAdapter } from "../adapter/tmdbAdapter";
 import { EntryType } from "../constants/enums";
+import { SavedEntry, SearchResult } from "../constants/types";
 
-// these inputs are probably wrong, i just should pass the body with it, and extract it within each method
-// also add return types
-export async function getAllSavedMovies() {
-    // no input
-    return await getSavedList(EntryType.movie);
-}
+export const plotlineHelper = {
+    async getAllSavedMovies(): Promise<SavedEntry[]> {
+        return await dynamoDBAdpater.getSavedList(EntryType.movie);
+    },
 
-export async function getAllSavedShows() {
-    // no input
-    return await getSavedList(EntryType.show);
-}
+    async getAllSavedShows(): Promise<SavedEntry[]> {
+        return await dynamoDBAdpater.getSavedList(EntryType.show);
+    },
 
-export async function queryByName(query: string) {
-    return await searchByName(query);
-}
+    async queryByName(query: string): Promise<SearchResult[]> {
+        return await tmdbAdapter.searchByName(query);
+    },
 
-export async function addMovieToList(tmdbId: number) {
-    // input - id number
+    async addMovieToList(tmdbId: number): Promise<void> {
+        const movieToAdd = await tmdbAdapter.getMovieById(tmdbId);
+        await dynamoDBAdpater.saveNewMovie(movieToAdd);
+    },
 
-    const movieToAdd = await getMovieById(tmdbId);
-    await saveMovie(movieToAdd);
-}
+    async addShowToList(tmdbId: number): Promise<void> {
+        const showToAdd = await tmdbAdapter.getShowById(tmdbId);
+        await dynamoDBAdpater.saveNewShow(showToAdd);
+    },
 
-export async function addShowToList(tmdbId: number) {
-    // input - id number
+    async setMovieWatchStatus(tmdbId: number, status: boolean): Promise<void> {
+        await dynamoDBAdpater.updateWatchedMovie(tmdbId, status);
+    },
 
-    const showToAdd = await getShowById(tmdbId);
-    await saveShow(showToAdd);
-}
+    async setShowWatchStatus(tmdbId: number, status: boolean): Promise<void> {
+        await dynamoDBAdpater.updateWatchedShow(tmdbId, status);
+    },
 
-export async function setWatched() {
+    async setMoviePersonalRating(tmdbId: number, rating: number): Promise<void> {
+        if (rating < 0 || rating > 10) {
+            throw new Error(`Invalid rating: ${rating}. Must be in range 0-10`);
+        }
 
-}
+        await dynamoDBAdpater.updateMovieRating(tmdbId, rating);
+    },
 
-export async function setNotWatched() {
+    async setShowPersonalRating(tmdbId: number, rating: number): Promise<void> {
+        if (rating < 0 || rating > 10) {
+            throw new Error(`Invalid rating: ${rating}. Must be in range 0-10`);
+        }
 
-}
+        await dynamoDBAdpater.updateShowRating(tmdbId, rating);
+    },
 
-export async function setPersonalRating() {
+    async removeMovieFromList(tmdbId: number): Promise<void> {
+        await dynamoDBAdpater.deleteMovie(tmdbId);
+    },
 
-}
-
-export async function removeFromList() {
-
+    async removeShowFromList(tmdbId: number): Promise<void> {
+        await dynamoDBAdpater.deleteShow(tmdbId);
+    }
 }

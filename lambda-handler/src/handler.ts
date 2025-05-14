@@ -1,16 +1,61 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
-import { addShowToList, getAllSavedMovies, getAllSavedShows, queryByName } from './helper/plotlineHelper';
+import { plotlineHelper } from './helper/plotlineHelper';
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
-    // use api gateway to accept multiple endpoints, but have it eoter add to event, or maybe
-    // its included by default in the event
-    // console.log("List:", await getSavedList(EntryType.movie));
+    const endpoint = event.path;
+    const input = event.body ? JSON.parse(event.body) : null;
 
-    const showToAdd = await queryByName("Silicon valle");
-    console.log("Show to add:", showToAdd[0]);
+    let responseMessage = "Operation Successful";
+    let statusCode = 200;
+    let responseBody = null;
 
-    await addShowToList(showToAdd[0].tmdbId);
-    console.log("Added show");
+    try {
+        switch(endpoint) {
+            case "/getAllMovies": {
+                const entries = await plotlineHelper.getAllSavedMovies();
+                responseBody = entries;
+                break;
+            }
 
-    console.log("All shows:", await getAllSavedShows());
+            case "/getAllShows": {
+                const entries = await plotlineHelper.getAllSavedShows();
+                responseBody = entries;
+                break;
+            }
+
+            case "/searchByName": {
+                if (!input?.searchQuery) {
+                    responseMessage = "Must provide input string";
+                    statusCode = 400;
+                    break;
+                }
+                const queryString = input.searchQuery;
+
+                const entries = await plotlineHelper.queryByName(queryString);
+                responseBody = entries;
+                break;
+            }
+
+            default: {
+                statusCode = 404;
+                responseMessage = `Unknown operation: '${endpoint}'`;
+                break;
+            }
+        }
+    } catch(error) {
+        console.error("Error processing request:", error);
+        statusCode = 500;
+        responseMessage = "Internal server error";
+    }
+
+    return {
+        statusCode,
+        body: JSON.stringify({
+            message: responseMessage,
+            data: responseBody
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }
 };
