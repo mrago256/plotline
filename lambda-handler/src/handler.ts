@@ -12,28 +12,153 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     try {
         switch(endpoint) {
             case "/getAllMovies": {
-                const entries = await plotlineHelper.getAllSavedMovies();
-                responseBody = entries;
+                responseBody = await plotlineHelper.getAllSavedMovies();
                 break;
             }
 
             case "/getAllShows": {
-                const entries = await plotlineHelper.getAllSavedShows();
-                responseBody = entries;
+                responseBody = await plotlineHelper.getAllSavedShows();
                 break;
             }
 
             case "/searchByName": {
-                if (!input?.searchQuery) {
-                    responseMessage = "Must provide input string";
+                const requiredFields = ["searchQuery"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
                     statusCode = 400;
                     break;
                 }
+
                 const queryString = input.searchQuery;
 
-                const entries = await plotlineHelper.queryByName(queryString);
-                responseBody = entries;
+                responseBody = await plotlineHelper.queryByName(queryString);
                 break;
+            }
+
+            case "/addMovie": {
+                const requiredFields = ["tmdbId"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+                
+                const tmdbId = input.tmdbId;
+
+                await plotlineHelper.addMovieToList(tmdbId);
+            }
+
+            case "/addShow": {
+                const requiredFields = ["tmdbId"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+
+                await plotlineHelper.addShowToList(tmdbId);
+            }
+
+            case "/setMovieWatchStatus": {
+                const requiredFields = ["tmdbId", "watched"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+                const watched = input.watched;
+
+                await plotlineHelper.setMovieWatchStatus(tmdbId, watched);
+            }
+
+            case "/setShowWatchStatus": {
+                const requiredFields = ["tmdbId", "watched"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+                const watched = input.watched;
+
+                await plotlineHelper.setShowWatchStatus(tmdbId, watched);
+            }
+
+            case "/setMovieRating": {
+                const requiredFields = ["tmdbId", "rating"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+                const rating = input.rating;
+
+                await plotlineHelper.setMoviePersonalRating(tmdbId, rating);
+            }
+
+            case "/setShowRating": {
+                const requiredFields = ["tmdbId", "rating"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+                const rating = input.rating;
+
+                await plotlineHelper.setShowPersonalRating(tmdbId, rating);
+            }
+
+            case "/removeMovie": {
+                const requiredFields = ["tmdbId"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+
+                await plotlineHelper.removeMovieFromList(tmdbId);
+            }
+
+            case "/removeShow": {
+                const requiredFields = ["tmdbId"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const tmdbId = input.tmdbId;
+
+                await plotlineHelper.removeShowFromList(tmdbId);
             }
 
             default: {

@@ -56,5 +56,19 @@ export const plotlineHelper = {
 
     async removeShowFromList(tmdbId: number): Promise<void> {
         await dynamoDBAdpater.deleteShow(tmdbId);
+    },
+
+    validateInput(input: Record<string, any>, requiredFields: string[]): string | null {
+        if (!input) {
+            return "Input must not be null";
+        }
+        
+        for (const field of requiredFields) {
+            if (!input[field]) {
+                return `Field: ${field} is missing from input`;
+            }
+        }
+
+        return null;
     }
 }
