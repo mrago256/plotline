@@ -31,3 +31,8 @@ export interface SavedEntry {
     watched: boolean
 }
 
+export interface HttpResponse {
+    statusCode: number,
+    body: string,
+    headers: Record<string, string>
+}

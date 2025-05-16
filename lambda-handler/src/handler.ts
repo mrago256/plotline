@@ -1,16 +1,26 @@
 import { APIGatewayEvent, Context } from 'aws-lambda';
 import { plotlineHelper } from './helper/plotlineHelper';
+import { HttpResponse } from './constants/types';
 
 export const handler = async (event: APIGatewayEvent, context: Context) => {
     const endpoint = event.path;
-    const input = event.body ? JSON.parse(event.body) : null;
 
     let responseMessage = "Operation Successful";
     let statusCode = 200;
     let responseBody = null;
 
+    let input;
     try {
-        switch(endpoint) {
+        input = event.body ? JSON.parse(event.body) : null;
+    } catch (error) {
+        responseMessage = "Input could not be parsed";
+        statusCode = 400;
+
+        return createResponse(statusCode, responseMessage, responseBody);
+    }
+
+    try {
+        switch (endpoint) {
             case "/getAllMovies": {
                 responseBody = await plotlineHelper.getAllSavedMovies();
                 break;
@@ -46,10 +56,11 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                     statusCode = 400;
                     break;
                 }
-                
+
                 const tmdbId = input.tmdbId;
 
                 await plotlineHelper.addMovieToList(tmdbId);
+                break;
             }
 
             case "/addShow": {
@@ -65,6 +76,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const tmdbId = input.tmdbId;
 
                 await plotlineHelper.addShowToList(tmdbId);
+                break;
             }
 
             case "/setMovieWatchStatus": {
@@ -81,6 +93,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const watched = input.watched;
 
                 await plotlineHelper.setMovieWatchStatus(tmdbId, watched);
+                break;
             }
 
             case "/setShowWatchStatus": {
@@ -97,6 +110,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const watched = input.watched;
 
                 await plotlineHelper.setShowWatchStatus(tmdbId, watched);
+                break;
             }
 
             case "/setMovieRating": {
@@ -113,6 +127,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const rating = input.rating;
 
                 await plotlineHelper.setMoviePersonalRating(tmdbId, rating);
+                break;
             }
 
             case "/setShowRating": {
@@ -129,6 +144,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const rating = input.rating;
 
                 await plotlineHelper.setShowPersonalRating(tmdbId, rating);
+                break;
             }
 
             case "/removeMovie": {
@@ -144,6 +160,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const tmdbId = input.tmdbId;
 
                 await plotlineHelper.removeMovieFromList(tmdbId);
+                break;
             }
 
             case "/removeShow": {
@@ -159,6 +176,7 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 const tmdbId = input.tmdbId;
 
                 await plotlineHelper.removeShowFromList(tmdbId);
+                break;
             }
 
             default: {
@@ -167,20 +185,24 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
                 break;
             }
         }
-    } catch(error) {
+    } catch (error) {
         console.error("Error processing request:", error);
         statusCode = 500;
         responseMessage = "Internal server error";
     }
 
+    return createResponse(statusCode, responseMessage, responseBody);
+};
+
+function createResponse(statusCode: number, responseMessage: string, responseBody: any): HttpResponse {
     return {
-        statusCode,
+        statusCode: statusCode,
         body: JSON.stringify({
             message: responseMessage,
             data: responseBody
         }),
         headers: {
-            'Content-Type': 'application/json'
+            "Content-Type": "application/json"
         }
     }
-};
+}

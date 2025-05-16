@@ -50,10 +50,17 @@ export class PlotlineStack extends Stack {
 
     private createAPIGateway(handler: Function): LambdaRestApi {
         return new LambdaRestApi(this, "plotline-api", {
+            restApiName: "plotline-api",
             handler: handler,
             proxy: true,
             deployOptions: {
-                stageName: "v1"
+                stageName: "v1",
+                methodOptions: {
+                    "/*/*": {
+                        throttlingBurstLimit: 1,
+                        throttlingRateLimit: 0.25
+                    }
+                }
             },
             deploy: true
         });

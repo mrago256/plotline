@@ -4,7 +4,7 @@ import { UpdateExpression } from "aws-sdk/clients/dynamodb";
 import { EntryType } from "../constants/enums";
 import { QueryResult, SavedEntry } from "../constants/types";
 
-const client = new DynamoDBClient({ region: "us-east-1", profile: "plotline" }); // profile for dev only
+const client = new DynamoDBClient({ region: "us-east-1" });
 const docClient = DynamoDBDocumentClient.from(client);
 
 const movieTableName = "plotline-movies"
