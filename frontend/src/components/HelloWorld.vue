@@ -1,17 +1,24 @@
 <script setup lang="ts">
-defineProps<{
-  msg: string
-}>()
+import { computed, ref } from "vue";
+
+const testRef = ref(false);
+
+const test = computed(() => {
+    if (testRef.value) {
+        return "btn-primary";
+    }
+
+    return "btn-accent";
+});
+
+function toggleButton() {
+    testRef.value = !testRef.value;
+}
 </script>
 
 <template>
-  <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <button class="btn btn-accent w-50">Accent</button>
-    <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>. What's next?
-    </h3>
-  </div>
+    <div class="greetings">
+        <button :class="['btn w-50 my-1', test]" :onclick="toggleButton">{{ testRef }}</button>
+        <h3>This is Plotline</h3>
+    </div>
 </template>
