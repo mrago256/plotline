@@ -32,7 +32,7 @@ function updateTheme() {
 
 <template>
     <label class="toggle text-base-content">
-        <input type="checkbox" :checked="isDark" @change="isDark = !isDark" />
+        <input type="checkbox" name="themeSwitcher" :checked="isDark" @change="isDark = !isDark" />
 
         <svg aria-label="sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <g
