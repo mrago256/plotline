@@ -1,16 +1,21 @@
 <script setup lang="ts">
-import router from "@/router";
-import { useUserStore } from "@/stores/userStore";
+import { api } from "@/api/api";
+import { useListStore } from "@/stores/listStore";
+import LogOut from "@/components/LogOut.vue";
+import Search from "@/components/Search.vue";
 
-const userStore = useUserStore();
+const listStore = useListStore();
 
-function logOut() {
-    localStorage.removeItem("session");
-    userStore.loggedIn = false;
-    router.push("/signIn");
+async function imCool() {
+    const list = await api.getShowList();
+    console.log("List:", list);
 }
 </script>
 
 <template>
-    <button class="btn btn-primary mx-2" :onclick="logOut">Log Out</button>
+    <LogOut class="mx-2" />
+    <button class="btn btn-primary mx-2" :onclick="imCool">yoyoyo cool</button>
+    <button class="btn btn-secondary mx-2" :onclick="listStore.loadShowList">Click meeeee</button>
+    <Search class="mx-2" />
+    <p>Items: {{ listStore.showList }}</p>
 </template>

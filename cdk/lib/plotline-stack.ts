@@ -1,5 +1,5 @@
 import { Duration, Stack, StackProps } from 'aws-cdk-lib';
-import { Deployment, LambdaRestApi, Stage } from 'aws-cdk-lib/aws-apigateway';
+import { LambdaRestApi } from 'aws-cdk-lib/aws-apigateway';
 import { AttributeType, Billing, Capacity, TableV2 } from 'aws-cdk-lib/aws-dynamodb';
 import { Code, Function, Runtime } from 'aws-cdk-lib/aws-lambda';
 import { Construct } from 'constructs';
@@ -44,6 +44,9 @@ export class PlotlineStack extends Stack {
             runtime: Runtime.NODEJS_22_X,
             environment: {
                 TMDB_TOKEN: process.env.TMDB_TOKEN!,
+                JWT_SECRET: process.env.JWT_SECRET!,
+                USERNAME: process.env.USERNAME!,
+                PASS: process.env.PASS!,
             }
         });
     }
@@ -53,6 +56,10 @@ export class PlotlineStack extends Stack {
             restApiName: "plotline-api",
             handler: handler,
             proxy: true,
+            defaultCorsPreflightOptions: {
+                allowOrigins: ["*"]
+            },
+
             deployOptions: {
                 stageName: "v1",
                 methodOptions: {
