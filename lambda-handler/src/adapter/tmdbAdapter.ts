@@ -70,7 +70,7 @@ function mapToSearchResult(item: any): SearchResult {
         description: item.overview || "No description available",
         rating: item.vote_average,
         posterUrl: posterUrl,
-        type: item.media_type == "movie" ? EntryType.movie : EntryType.show,
+        type: item.media_type === "movie" ? EntryType.movie : EntryType.show,
         popularity: item.popularity,
         tmdbId: item.id
     }

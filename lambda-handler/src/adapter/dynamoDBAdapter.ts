@@ -13,7 +13,7 @@ const showTableName = "plotline-shows"
 export const dynamoDBAdpater = {
     async getSavedList(entryType: EntryType): Promise<SavedEntry[]> {
         const command = new ScanCommand({
-            "TableName": entryType == EntryType.movie ? movieTableName : showTableName
+            "TableName": entryType === EntryType.movie ? movieTableName : showTableName
         });
 
         const response = await docClient.send(command);

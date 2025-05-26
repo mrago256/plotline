@@ -2,6 +2,9 @@ import { dynamoDBAdpater } from "../adapter/dynamoDBAdapter";
 import { tmdbAdapter } from "../adapter/tmdbAdapter";
 import { EntryType } from "../constants/enums";
 import { SavedEntry, SearchResult } from "../constants/types";
+import * as jwt from 'jsonwebtoken';
+
+const secretKey = process.env.JWT_SECRET!;
 
 export const plotlineHelper = {
     async getAllSavedMovies(): Promise<SavedEntry[]> {
@@ -56,6 +59,24 @@ export const plotlineHelper = {
 
     async removeShowFromList(tmdbId: number): Promise<void> {
         await dynamoDBAdpater.deleteShow(tmdbId);
+    },
+
+    createJWTToken(username: string): string {
+        const payload = { username: username };
+
+        return jwt.sign(payload, secretKey, {
+            expiresIn: "1h"
+        });
+    },
+
+    verifyJWTToken(token: string): boolean {
+        try {
+            jwt.verify(token, secretKey);
+        } catch (error) {
+            return false;
+        }
+
+        return true;
     },
 
     validateInput(input: Record<string, any>, requiredFields: string[]): string | null {

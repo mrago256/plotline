@@ -9,6 +9,17 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
     let statusCode = 200;
     let responseBody = null;
 
+    if (endpoint !== "/logIn") {
+        const token = event.headers.Authorization;
+
+        if (!token || !plotlineHelper.verifyJWTToken(token)) {
+            responseMessage = "Invalid credentials";
+            statusCode = 401;
+
+            return createResponse(statusCode, responseMessage, responseBody);
+        }
+    }
+
     let input;
     try {
         input = event.body ? JSON.parse(event.body) : null;
@@ -21,6 +32,31 @@ export const handler = async (event: APIGatewayEvent, context: Context) => {
 
     try {
         switch (endpoint) {
+            case "/logIn": {
+                const requiredFields = ["username", "password"];
+                const validationResponse = plotlineHelper.validateInput(input, requiredFields);
+
+                if (validationResponse) {
+                    responseMessage = validationResponse;
+                    statusCode = 400;
+                    break;
+                }
+
+                const { username, password } = input;
+                const expectedUsername = process.env.USERNAME;
+                const expectedPassword = process.env.PASS;
+
+                if (!(username === expectedUsername && password === expectedPassword)) {
+                    responseMessage = "Incorrect credentials";
+                    statusCode = 401;
+                    break;
+                }
+
+                const token = plotlineHelper.createJWTToken(username);
+                responseBody = { token: token };
+                break;
+            }
+
             case "/getAllMovies": {
                 responseBody = await plotlineHelper.getAllSavedMovies();
                 break;
@@ -202,7 +238,8 @@ function createResponse(statusCode: number, responseMessage: string, responseBod
             data: responseBody
         }),
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*" // for dev
         }
     }
 }
