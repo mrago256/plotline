@@ -5,11 +5,15 @@ export interface ListItem {
     description: string;
     bannerUrl: string | null;
     posterUrl: string | null;
-    type: string;
+    type: "show" | "movie";
     rating: number;
     personalRating: number | null;
     popularity: number;
     dateAdded: number;
     dateWatched: number | null;
     watched: boolean;
+}
+
+export interface StoreList {
+    items: ListItem[];
 }

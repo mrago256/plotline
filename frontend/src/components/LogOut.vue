@@ -12,5 +12,5 @@ function logOut() {
 </script>
 
 <template>
-    <button class="btn btn-accent mx-2" :onclick="logOut">Log Out</button>
+    <button class="btn btn-accent btn-soft" :onclick="logOut">Log Out</button>
 </template>

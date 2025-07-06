@@ -1,35 +1,46 @@
 <script setup lang="ts">
-import { api } from "@/api/api";
-import type { ListItem } from "@/const/types";
-import { debounce } from "@/util/debounce";
-import { reactive, ref } from "vue";
+import { useSearchStore } from '@/stores/searchStore';
+import { debounce } from '@/util/debounce';
+import { ref } from 'vue';
 
 const searchQuery = ref("");
-const searchItems: ListItem[] = reactive([]);
+const searchStore = useSearchStore();
+const { debounced: debouncedSearch, cancelDebounced } = debounce(search, 750);
 
-const debouncedSearch = debounce(search, 1000);
-
-async function search() {
-    searchItems.length = 0;
-
-    if (searchQuery.value.length == 0) {
-        return;
-    }
-
-    try {
-        const items = await api.searchByName(searchQuery.value);
-        searchItems.push(...items);
-    } catch (error) {
-        console.error("Some error happened"); // for now
+function handleInput() {
+    if (searchQuery.value.length) {
+        debouncedSearch();
+    } else {
+        search();
     }
 }
+
+function handleEnter() {
+    cancelDebounced();
+    search();
+}
+
+function search() {
+    searchStore.search(searchQuery.value);
+}
+
 </script>
 
 <template>
-    <div>
-        <input class="input" placeholder="Search" @input="debouncedSearch" v-model="searchQuery" />
-        <div>
-            {{ searchItems.map((searchItem) => searchItem.name) }}
-        </div>
-    </div>
+<label class="input w-100 focus-within:border-none">
+    <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g
+        stroke-linejoin="round"
+        stroke-linecap="round"
+        stroke-width="2.5"
+        fill="none"
+        stroke="currentColor"
+        >
+        <circle cx="11" cy="11" r="8"></circle>
+        <path d="m21 21-4.3-4.3"></path>
+        </g>
+    </svg>
+    <input type="search" placeholder="Search" @input="handleInput" @keydown.enter="handleEnter" v-model="searchQuery" />
+    <span v-if="searchStore.loading" class="loading loading-spinner text-accent"></span>
+</label>
 </template>

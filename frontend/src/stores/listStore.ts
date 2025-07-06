@@ -1,11 +1,7 @@
 import { reactive } from "vue";
 import { defineStore } from "pinia";
 import { api } from "@/api/api";
-import type { ListItem } from "@/const/types";
-
-interface StoreList {
-    items: ListItem[];
-}
+import type { ListItem, StoreList } from "@/const/types";
 
 export const useListStore = defineStore("listStore", () => {
     const movieList: StoreList = reactive({ items: [] });
@@ -31,7 +27,7 @@ export const useListStore = defineStore("listStore", () => {
     }
 
     async function addToShowList(show: ListItem) {
-        await api.addToMovieList(show.tmdbId);
+        await api.addToShowList(show.tmdbId);
         movieList.items.push(show);
     }
 

@@ -37,7 +37,7 @@ export const api = {
 
     async addToMovieList(tmdbId: number): Promise<void> {
         const body = {
-            imdbId: tmdbId,
+            tmdbId: tmdbId,
         };
         await makeRequest("/addMovie", body);
     },

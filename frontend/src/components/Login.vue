@@ -14,7 +14,8 @@ async function login() {
 
 <template>
     <div class="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <img class="mx-auto h-10 w-auto" src="../assets/icon.svg" alt="Plotline" /> <!-- Placeholder icon -->
+        <img class="mx-auto h-10 w-auto" src="../assets/icon.svg" alt="Plotline" />
+        <!-- Placeholder icon -->
         <h2 class="mt-10 text-center text-2xl/9 font-bold">Plotline</h2>
 
         <div class="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
@@ -23,7 +24,7 @@ async function login() {
                     <label class="floating-label">
                         <span>Username</span>
                         <input
-                            class="input input-md w-full text-base"
+                            class="input input-md w-full text-base focus:border-none"
                             type="username"
                             name="username"
                             autocomplete="username"
@@ -38,7 +39,7 @@ async function login() {
                     <label class="floating-label">
                         <span>Password</span>
                         <input
-                            class="input input-md w-full text-base"
+                            class="input input-md w-full text-base focus:border-none"
                             type="password"
                             name="password"
                             autocomplete="current-password"

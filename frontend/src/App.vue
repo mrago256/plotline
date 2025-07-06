@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { onBeforeMount } from "vue";
-import { RouterLink, RouterView } from "vue-router";
-import ThemeChanger from "./components/ThemeChanger.vue";
+import NavBar from "./components/NavBar.vue";
 import { useUserStore } from "./stores/userStore";
+import { useListStore } from "./stores/listStore";
 
 onBeforeMount(() => {
+    handleSession();
+    loadLists();
+});
+
+function handleSession() {
     const userStore = useUserStore();
 
     const session = localStorage.getItem("session");
@@ -21,18 +26,19 @@ onBeforeMount(() => {
 
     userStore.loggedIn = false;
     localStorage.removeItem("session");
-});
+}
+
+function loadLists() {
+    const listStore = useListStore();
+    listStore.loadMovieList();
+    listStore.loadShowList();
+}
+
 </script>
 
 <template>
     <header>
-        <div class="wrapper m-2">
-            <ThemeChanger />
-            <nav>
-                <RouterLink to="/">Home</RouterLink>
-                <RouterLink to="/login" class="mx-2">test Login</RouterLink>
-            </nav>
-        </div>
+        <NavBar class="mb-4"/>
     </header>
 
     <RouterView />

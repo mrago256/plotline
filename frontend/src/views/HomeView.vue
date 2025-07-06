@@ -1,21 +1,17 @@
 <script setup lang="ts">
-import { api } from "@/api/api";
 import { useListStore } from "@/stores/listStore";
-import LogOut from "@/components/LogOut.vue";
-import Search from "@/components/Search.vue";
+import { ref } from "vue";
 
 const listStore = useListStore();
+const testRender = ref(false);
 
 async function imCool() {
-    const list = await api.getShowList();
-    console.log("List:", list);
+    testRender.value = !testRender.value;
 }
 </script>
 
 <template>
-    <LogOut class="mx-2" />
-    <button class="btn btn-primary mx-2" :onclick="imCool">yoyoyo cool</button>
-    <button class="btn btn-secondary mx-2" :onclick="listStore.loadShowList">Click meeeee</button>
-    <Search class="mx-2" />
-    <p>Items: {{ listStore.showList }}</p>
+    <button class="btn btn-secondary mx-2" :onclick="listStore.loadShowList">Load Show List</button>
+    <button class="btn btn-primary mx-2" :onclick="imCool">Toggle List</button>
+    <p v-if="testRender">Items: {{ listStore.showList.items }}</p>
 </template>
