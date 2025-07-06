@@ -1,5 +1,5 @@
-import type { ListItem } from "@/const/types";
-import { useUserStore } from "@/stores/userStore";
+import type { ListItem } from '@/const/types';
+import { useUserStore } from '@/stores/userStore';
 
 export const api = {
     async logIn(username: string, password: string): Promise<string> {
@@ -9,10 +9,10 @@ export const api = {
         };
 
         try {
-            const response = await makeRequest("/logIn", body);
+            const response = await makeRequest('/logIn', body);
             return (response as { token: string }).token;
         } catch (error) {
-            return "";
+            return '';
         }
     },
 
@@ -21,17 +21,17 @@ export const api = {
             searchQuery: query,
         };
 
-        const response = await makeRequest("/searchByName", body);
+        const response = await makeRequest('/searchByName', body);
         return response as ListItem[];
     },
 
     async getMovieList(): Promise<ListItem[]> {
-        const response = await makeRequest("/getAllMovies");
+        const response = await makeRequest('/getAllMovies');
         return response as ListItem[];
     },
 
     async getShowList(): Promise<ListItem[]> {
-        const response = await makeRequest("/getAllShows");
+        const response = await makeRequest('/getAllShows');
         return response as ListItem[];
     },
 
@@ -39,39 +39,39 @@ export const api = {
         const body = {
             tmdbId: tmdbId,
         };
-        await makeRequest("/addMovie", body);
+        await makeRequest('/addMovie', body);
     },
 
     async addToShowList(tmdbId: number): Promise<void> {
         const body = {
             tmdbId: tmdbId,
         };
-        await makeRequest("/addShow", body);
+        await makeRequest('/addShow', body);
     },
 
     async removeFromMovieList(tmdbId: number): Promise<void> {
         const body = {
             tmdbId: tmdbId,
         };
-        await makeRequest("/removeMovie", body);
+        await makeRequest('/removeMovie', body);
     },
 
     async removeFromShowList(tmdbId: number): Promise<void> {
         const body = {
             tmdbId: tmdbId,
         };
-        await makeRequest("/removeShow", body);
+        await makeRequest('/removeShow', body);
     },
 };
 
 async function makeRequest(endpoint: string, body: Record<string, unknown> = {}): Promise<unknown> {
     const userStore = useUserStore();
-    const prefix = "";
+    const prefix = '';
 
     const response = await fetch(prefix + endpoint, {
-        method: "POST",
+        method: 'POST',
         headers: {
-            "Content-Type": "application/json",
+            'Content-Type': 'application/json',
             Authorization: userStore.token,
         },
         body: JSON.stringify(body),

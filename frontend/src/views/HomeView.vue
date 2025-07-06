@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useListStore } from "@/stores/listStore";
-import { ref } from "vue";
+import { useListStore } from '@/stores/listStore';
+import { ref } from 'vue';
 
 const listStore = useListStore();
 const testRender = ref(false);

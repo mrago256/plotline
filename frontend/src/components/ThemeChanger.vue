@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from "vue";
+import { onMounted, ref, watch } from 'vue';
 // secret window
 
-const light = "emerald";
-const dark = "dracula";
+const light = 'emerald';
+const dark = 'dracula';
 
 const isDark = ref(false);
 
@@ -12,21 +12,21 @@ onMounted(() => {
 });
 
 watch(isDark, (newValue) => {
-    localStorage.setItem("theme", JSON.stringify(newValue));
+    localStorage.setItem('theme', JSON.stringify(newValue));
     updateTheme();
 });
 
 function loadTheme() {
-    const storedTheme = localStorage.getItem("theme");
+    const storedTheme = localStorage.getItem('theme');
     if (storedTheme) {
-        isDark.value = storedTheme == "true";
+        isDark.value = storedTheme == 'true';
     }
 
     updateTheme();
 }
 
 function updateTheme() {
-    document.documentElement.setAttribute("data-theme", isDark.value ? dark : light);
+    document.documentElement.setAttribute('data-theme', isDark.value ? dark : light);
 }
 </script>
 

@@ -1,4 +1,7 @@
-export function debounce(callback: () => void, delay: number): { debounced: () => void, cancelDebounced: () => void } {
+export function debounce(
+    callback: () => void,
+    delay: number,
+): { debounced: () => void; cancelDebounced: () => void } {
     let timer: number | undefined;
 
     const debounced = () => {

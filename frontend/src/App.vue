@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeMount } from "vue";
-import NavBar from "./components/NavBar.vue";
-import { useUserStore } from "./stores/userStore";
-import { useListStore } from "./stores/listStore";
+import { onBeforeMount } from 'vue';
+import NavBar from './components/NavBar.vue';
+import { useUserStore } from './stores/userStore';
+import { useListStore } from './stores/listStore';
 
 onBeforeMount(() => {
     handleSession();
@@ -12,7 +12,7 @@ onBeforeMount(() => {
 function handleSession() {
     const userStore = useUserStore();
 
-    const session = localStorage.getItem("session");
+    const session = localStorage.getItem('session');
     const sessionInfo = session ? JSON.parse(session) : null;
 
     const validDate = new Date();
@@ -25,7 +25,7 @@ function handleSession() {
     }
 
     userStore.loggedIn = false;
-    localStorage.removeItem("session");
+    localStorage.removeItem('session');
 }
 
 function loadLists() {
@@ -33,12 +33,11 @@ function loadLists() {
     listStore.loadMovieList();
     listStore.loadShowList();
 }
-
 </script>
 
 <template>
     <header>
-        <NavBar class="mb-4"/>
+        <NavBar class="mb-4" />
     </header>
 
     <RouterView />

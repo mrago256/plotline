@@ -1,9 +1,9 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @plugin "daisyui" {
     themes:
         emerald --default,
         dracula;
-    root: ":root";
+    root: ':root';
     include:;
     exclude:;
     prefix:;

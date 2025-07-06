@@ -5,7 +5,7 @@ export interface ListItem {
     description: string;
     bannerUrl: string | null;
     posterUrl: string | null;
-    type: "show" | "movie";
+    type: 'show' | 'movie';
     rating: number;
     personalRating: number | null;
     popularity: number;

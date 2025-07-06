@@ -1,10 +1,10 @@
-import { ref } from "vue";
-import { defineStore } from "pinia";
-import { api } from "@/api/api";
-import router from "../router";
+import { ref } from 'vue';
+import { defineStore } from 'pinia';
+import { api } from '@/api/api';
+import router from '../router';
 
-export const useUserStore = defineStore("userStore", () => {
-    const token = ref("");
+export const useUserStore = defineStore('userStore', () => {
+    const token = ref('');
     const loggedIn = ref(false);
     const loading = ref(false);
 
@@ -16,12 +16,12 @@ export const useUserStore = defineStore("userStore", () => {
         if (jwt.length) {
             loggedIn.value = true;
             token.value = jwt;
-            localStorage.setItem("session", JSON.stringify({ token: jwt, timestamp: Date.now() }));
+            localStorage.setItem('session', JSON.stringify({ token: jwt, timestamp: Date.now() }));
 
-            router.push("/");
+            router.push('/');
         } else {
             // set some sort of error state to show not logged in
-            alert("Invalid credentials"); // for now
+            alert('Invalid credentials'); // for now
         }
     }
 

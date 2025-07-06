@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useUserStore } from "@/stores/userStore";
-import { ref } from "vue";
+import { useUserStore } from '@/stores/userStore';
+import { ref } from 'vue';
 
 const userStore = useUserStore();
 
-const username = ref("");
-const password = ref("");
+const username = ref('');
+const password = ref('');
 
 async function login() {
     userStore.attemptLogIn(username.value, password.value);

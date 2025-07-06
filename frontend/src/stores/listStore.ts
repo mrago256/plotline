@@ -1,9 +1,9 @@
-import { reactive } from "vue";
-import { defineStore } from "pinia";
-import { api } from "@/api/api";
-import type { ListItem, StoreList } from "@/const/types";
+import { reactive } from 'vue';
+import { defineStore } from 'pinia';
+import { api } from '@/api/api';
+import type { ListItem, StoreList } from '@/const/types';
 
-export const useListStore = defineStore("listStore", () => {
+export const useListStore = defineStore('listStore', () => {
     const movieList: StoreList = reactive({ items: [] });
     const showList: StoreList = reactive({ items: [] });
 
