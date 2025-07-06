@@ -64,8 +64,8 @@ export class PlotlineStack extends Stack {
                 stageName: "v1",
                 methodOptions: {
                     "/*/*": {
-                        throttlingBurstLimit: 1,
-                        throttlingRateLimit: 0.25
+                        throttlingBurstLimit: 5,
+                        throttlingRateLimit: 0.5
                     }
                 }
             },

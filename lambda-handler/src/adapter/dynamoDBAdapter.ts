@@ -116,12 +116,13 @@ async function deleteEntry(tmdbId: number, table: string): Promise<void> {
 }
 
 async function saveEntry(entry: QueryResult, table: string): Promise<void> {
-    const itemToPut = entry as SavedEntry;
-
-    itemToPut.personalRating = null;
-    itemToPut.dateWatched = null;
-    itemToPut.watched = false;
-    itemToPut.dateAdded = Math.floor(Date.now() / 1000);
+    const itemToPut: SavedEntry = {
+        ...entry,
+        personalRating: null,
+        dateWatched: null,
+        watched: false,
+        dateAdded: Math.floor(Date.now() / 1000)
+    };
 
     const command = new PutCommand({
         TableName: table,

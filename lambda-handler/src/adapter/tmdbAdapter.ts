@@ -9,15 +9,25 @@ const showDetailsEndpoint = "3/tv";
 
 const authToken = process.env.TMDB_TOKEN;
 
+// add an endpoint to specifically search movies or tv shows, just filering on frontend will not be gr8
+// idk waht that was supposed to mean
 export const tmdbAdapter = {
     async searchByName(query: string): Promise<SearchResult[]> {
         const queryUrl = buildSearchUrl(query);
         const response = await performNetworkCall(queryUrl);
 
         const results = response.results.map((item: any) => mapToSearchResult(item));
-        results.sort((a: { popularity: number; }, b: { popularity: number; }) => b.popularity - a.popularity);
+        results.sort((a: { popularity: number; language: string }, b: { popularity: number; language: string }) => {
+            if (a.language === 'en' && b.language !== 'en') {
+                return -1;
+            } else if (a.language !== 'en' && b.language === 'en') {
+                return 1;
+            }
 
-        return results.slice(0, 8);
+            return b.popularity - a.popularity;
+        });
+
+        return results.slice(0, 12);
     },
 
     async getMovieById(id: number): Promise<QueryResult> {
@@ -62,6 +72,7 @@ function buildShowIdUrl(id: number): URL {
 
 function mapToSearchResult(item: any): SearchResult {
     const posterUrl = item.poster_path ? `${imageURL}/w500${item.poster_path}` : null;
+    const bannerUrl = item.backdrop_path ? `${imageURL}/original${item.backdrop_path}` : null;
     const yearString = item.release_date || item.first_air_date;
 
     return {
@@ -69,20 +80,18 @@ function mapToSearchResult(item: any): SearchResult {
         year: yearString ? new Date(yearString).getFullYear() : null,
         description: item.overview || "No description available",
         rating: item.vote_average,
+        bannerUrl: bannerUrl,
         posterUrl: posterUrl,
         type: item.media_type === "movie" ? EntryType.movie : EntryType.show,
         popularity: item.popularity,
+        language: item.original_language,
         tmdbId: item.id
     }
 }
 
+// TODO: Remove useless QueryResult type
 function mapToQueryResult(item: any): QueryResult {
-    const queryResult = mapToSearchResult(item) as QueryResult;
-    const bannerUrl = item.backdrop_path ? `${imageURL}/original${item.backdrop_path}` : null;
-
-    queryResult.bannerUrl = bannerUrl;
-
-    return queryResult;
+    return mapToSearchResult(item) as QueryResult;
 }
 
 async function performNetworkCall(url: URL, body?: any): Promise<any> {

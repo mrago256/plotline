@@ -5,9 +5,11 @@ export interface SearchResult {
     year: number | null,
     description: string,
     rating: number,
+    bannerUrl: string | null,
     posterUrl: string | null,
     type: EntryType,
     popularity: number,
+    language: string,
     tmdbId: number
 }
 
