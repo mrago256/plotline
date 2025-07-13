@@ -85,7 +85,7 @@ export const plotlineHelper = {
         }
 
         for (const field of requiredFields) {
-            if (!input[field]) {
+        if (input[field] === undefined || input[field] === null) {
                 return `Field: ${field} is missing from input`;
             }
         }

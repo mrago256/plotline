@@ -35,7 +35,12 @@ export const tmdbAdapter = {
 
         const response = await performNetworkCall(queryUrl);
 
-        return mapToQueryResult(response);
+        // return mapToQueryResult(response);
+
+        // TODO: Fix this temporary jank
+        const movie: QueryResult = mapToQueryResult(response);
+        movie.type = EntryType.movie;
+        return movie;
     },
 
     async getShowById(id: number): Promise<QueryResult> {
