@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ListItem } from '@/const/types';
 import { useListStore } from '@/stores/listStore';
-import { computed, type PropType } from 'vue';
+import { computed, watch, type PropType } from 'vue';
 
 const listStore = useListStore();
 
@@ -34,14 +34,14 @@ const props = defineProps({
         type: String,
         required: true,
     },
-    fullItem: {
-        type: Object as PropType<ListItem>,
+    isWatched: {
+        type: Boolean,
         required: true,
     },
 });
 
 const rating = computed(() => {
-    return props.rating ? Math.round(props.rating) : null;
+    return props.rating !== null && props.rating !== undefined ? Math.round(props.rating) : null;
 });
 
 const calculateStars = computed(() => {
@@ -62,29 +62,23 @@ const formattedDescription = computed(() => {
         : props.description.slice(0, 250) + '...';
 });
 
-const itemSaved = computed(() => {
-    if (props.type === 'show') {
-        return !!listStore.showList.find((entry) => entry.tmdbId === props.tmdbId);
-    } else {
-        return !!listStore.movieList.find((entry) => entry.tmdbId === props.tmdbId);
-    }
-});
+// probably want a confirm modal first, but this works for now
+function removeItem() {
+    props.type === 'show'
+        ? listStore.removeFromShowList(props.tmdbId)
+        : listStore.removeFromMovieList(props.tmdbId);
+}
 
-function handleSave() {
-    if (props.type === 'show') {
-        itemSaved.value
-            ? listStore.removeFromShowList(props.tmdbId)
-            : listStore.addToShowList(props.fullItem);
-    } else {
-        itemSaved.value
-            ? listStore.removeFromMovieList(props.tmdbId)
-            : listStore.addToMovieList(props.fullItem);
-    }
+function markWatched() {
+    console.log('type:', props.type);
+    props.type === 'show'
+        ? listStore.toggleShowWatched(props.tmdbId)
+        : listStore.toggleMovieWatched(props.tmdbId);
 }
 </script>
 
 <template>
-    <div class="card card-border bg-base-100 w-96 shadow-lg">
+    <div class="card card-border bg-base-100 w-105 shadow-lg">
         <figure>
             <img v-if="props.bannerUrl" :src="props.bannerUrl" alt="Background Image" />
             <div
@@ -143,14 +137,21 @@ function handleSave() {
                         <span class="text-sm text-base-content">{{ rating }}/10</span>
                     </div>
                 </div>
+                <button class="btn btn-soft btn-error" @click="removeItem">Remove</button>
                 <button
-                    class="btn btn-accent"
-                    :class="!itemSaved ? 'btn-accent' : 'btn-soft btn-error'"
-                    @click="handleSave"
+                    class="btn ml-auto"
+                    :class="props.isWatched ? 'btn-primary' : 'btn-secondary'"
+                    @click="markWatched"
                 >
-                    {{ !itemSaved ? 'Add to List' : 'Remove' }}
+                    {{ props.isWatched ? 'Unmark as Watched' : 'Mark Watched' }}
                 </button>
             </div>
         </div>
     </div>
 </template>
+
+<style>
+.ratingCursor {
+    cursor: default !important;
+}
+</style>

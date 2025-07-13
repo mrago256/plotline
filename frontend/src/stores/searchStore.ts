@@ -1,18 +1,18 @@
 import { api } from '@/api/api';
-import type { StoreList } from '@/const/types';
 import { defineStore } from 'pinia';
-import { reactive, ref } from 'vue';
+import { ref } from 'vue';
 import router from '../router';
+import type { ListItem } from '@/const/types';
 
 export const useSearchStore = defineStore('searchStore', () => {
     const loading = ref(false);
-    const searchList: StoreList = reactive({ items: [] });
+    const searchList = ref<ListItem[]>([]);
 
     async function search(searchQuery: string) {
         loading.value = true;
 
         if (!searchQuery.length) {
-            searchList.items.length = 0;
+            searchList.value = [];
             loading.value = false;
             router.push('/');
             return;
@@ -21,8 +21,8 @@ export const useSearchStore = defineStore('searchStore', () => {
         let data;
         try {
             data = await api.searchByName(searchQuery);
-            searchList.items.length = 0;
-            searchList.items.push(...data);
+            searchList.value = [];
+            searchList.value.push(...data);
         } catch (error) {
             console.error('Error searching', error); // for now
         } finally {

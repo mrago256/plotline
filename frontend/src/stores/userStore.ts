@@ -2,6 +2,7 @@ import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { api } from '@/api/api';
 import router from '../router';
+import { useListStore } from './listStore';
 
 export const useUserStore = defineStore('userStore', () => {
     const token = ref('');
@@ -19,6 +20,9 @@ export const useUserStore = defineStore('userStore', () => {
             localStorage.setItem('session', JSON.stringify({ token: jwt, timestamp: Date.now() }));
 
             router.push('/');
+            const listStore = useListStore();
+            listStore.loadMovieList();
+            listStore.loadShowList();
         } else {
             // set some sort of error state to show not logged in
             alert('Invalid credentials'); // for now

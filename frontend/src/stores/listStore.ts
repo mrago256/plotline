@@ -1,51 +1,65 @@
-import { reactive } from 'vue';
+import { ref } from 'vue';
 import { defineStore } from 'pinia';
 import { api } from '@/api/api';
-import type { ListItem, StoreList } from '@/const/types';
+import type { ListItem } from '@/const/types';
 
 export const useListStore = defineStore('listStore', () => {
-    const movieList: StoreList = reactive({ items: [] });
-    const showList: StoreList = reactive({ items: [] });
+    const currentlyDisplayed = ref('shows');
+    const listOrder = ref('newest');
+    const movieList = ref<ListItem[]>([]);
+    const showList = ref<ListItem[]>([]);
 
     async function loadMovieList() {
         const data = await api.getMovieList();
-
-        movieList.items.length = 0;
-        movieList.items.push(...data);
+        movieList.value = [];
+        movieList.value.push(...data);
     }
 
     async function loadShowList() {
         const data = await api.getShowList();
-
-        showList.items.length = 0;
-        showList.items.push(...data);
+        showList.value = [];
+        showList.value.push(...data);
     }
 
     async function addToMovieList(movie: ListItem) {
+        movieList.value.push(movie);
         await api.addToMovieList(movie.tmdbId);
-        movieList.items.push(movie);
     }
 
     async function addToShowList(show: ListItem) {
+        showList.value.push(show);
         await api.addToShowList(show.tmdbId);
-        movieList.items.push(show);
     }
 
     async function removeFromMovieList(tmdbId: number) {
-        const index = movieList.items.findIndex((element) => element.tmdbId == tmdbId);
-
+        movieList.value = movieList.value.filter((item) => item.tmdbId !== tmdbId);
         api.removeFromMovieList(tmdbId);
-        movieList.items.splice(index, 1);
     }
 
     async function removeFromShowList(tmdbId: number) {
-        const index = showList.items.findIndex((element) => element.tmdbId == tmdbId);
-
+        showList.value = showList.value.filter((item) => item.tmdbId !== tmdbId);
         api.removeFromShowList(tmdbId);
-        showList.items.splice(index, 1);
+    }
+
+    async function toggleShowWatched(tmdbId: number) {
+        const index = showList.value.findIndex((item) => item.tmdbId === tmdbId);
+        const isWatched = showList.value[index].watched;
+
+        showList.value[index].watched = !isWatched;
+        api.setShowWatchStatus(tmdbId, !isWatched);
+    }
+
+    async function toggleMovieWatched(tmdbId: number) {
+        const index = movieList.value.findIndex((item) => item.tmdbId === tmdbId);
+        const isWatched = movieList.value[index].watched;
+
+        movieList.value[index].watched = !isWatched;
+        api.setMovieWatchStatus(tmdbId, !isWatched);
     }
 
     return {
+        currentlyDisplayed,
+        listOrder,
         movieList,
         showList,
         loadMovieList,
@@ -54,5 +68,7 @@ export const useListStore = defineStore('listStore', () => {
         removeFromShowList,
         addToMovieList,
         addToShowList,
+        toggleShowWatched,
+        toggleMovieWatched,
     };
 });

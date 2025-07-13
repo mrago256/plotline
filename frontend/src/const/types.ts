@@ -13,7 +13,3 @@ export interface ListItem {
     dateWatched: number | null;
     watched: boolean;
 }
-
-export interface StoreList {
-    items: ListItem[];
-}

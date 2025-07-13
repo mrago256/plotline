@@ -9,9 +9,10 @@ onBeforeMount(() => {
     loadLists();
 });
 
-function handleSession() {
-    const userStore = useUserStore();
+const userStore = useUserStore();
+const listStore = useListStore();
 
+function handleSession() {
     const session = localStorage.getItem('session');
     const sessionInfo = session ? JSON.parse(session) : null;
 
@@ -29,9 +30,10 @@ function handleSession() {
 }
 
 function loadLists() {
-    const listStore = useListStore();
-    listStore.loadMovieList();
-    listStore.loadShowList();
+    if (userStore.loggedIn) {
+        listStore.loadMovieList();
+        listStore.loadShowList();
+    }
 }
 </script>
 

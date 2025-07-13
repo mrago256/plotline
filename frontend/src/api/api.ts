@@ -62,6 +62,22 @@ export const api = {
         };
         await makeRequest('/removeShow', body);
     },
+
+    async setMovieWatchStatus(tmdbId: number, watched: boolean): Promise<void> {
+        const body = {
+            tmdbId: tmdbId,
+            watched: watched,
+        };
+        await makeRequest('/setMovieWatchStatus', body);
+    },
+
+    async setShowWatchStatus(tmdbId: number, watched: boolean): Promise<void> {
+        const body = {
+            tmdbId: tmdbId,
+            watched: watched,
+        };
+        await makeRequest('/setShowWatchStatus', body);
+    },
 };
 
 async function makeRequest(endpoint: string, body: Record<string, unknown> = {}): Promise<unknown> {

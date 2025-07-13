@@ -40,6 +40,7 @@ function search() {
             </g>
         </svg>
         <input
+            class="text-base md:text-sm lg:text-sm"
             type="search"
             placeholder="Search"
             @input="handleInput"

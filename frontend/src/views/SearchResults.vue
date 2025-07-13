@@ -6,9 +6,9 @@ const searchStore = useSearchStore();
 </script>
 
 <template>
-    <div class="flex flex-wrap gap-4 py-2">
+    <div class="flex flex-wrap gap-4 m-5">
         <SearchResult
-            v-for="entry in searchStore.searchList.items"
+            v-for="entry in searchStore.searchList"
             class="flex-grow flex justify-center"
             :tmdb-id="entry.tmdbId"
             :title="entry.name"
